@@ -29,3 +29,4 @@ t/01perlcritic.t
 t/02pod.t
 t/03pod-coverage.t
 t/04kwalitee.t
+t/CatalystX-Plugin-Engine-FastCGI-Lighttpd.t

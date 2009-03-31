@@ -5,14 +5,14 @@ package CatalystX::Plugin::Engine::FastCGI::Lighttpd;
 use strict;
 use warnings;
 use utf8;
-use version; our $VERSION = qv('0.0.1');
+use version; our $VERSION = qv('0.0.2');
 
 use NEXT;
 
 sub handle_request {
-    my ( $c, @args ) = @_;
+    my ( $c, %args ) = @_;
 
-    my $env_ref = $args[1];
+    my $env_ref = $args{env};
 
     if ( ( $env_ref->{SERVER_SOFTWARE} || q{} ) !~ /lighttpd/msx ) {
         $c->log->warn('Do you want to apply this really?');
@@ -25,7 +25,9 @@ sub handle_request {
     ( $env_ref->{PATH_INFO}, $env_ref->{QUERY_STRING} ) =
       ( split /\?/msx, $env_ref->{REQUEST_URI}, 2 );
 
-    return $c->NEXT::handle_request(@args);
+    $env_ref->{HTTP_X_FORWARDED_HOST} ||= $env_ref->{HTTP_X_HOST};
+
+    return $c->NEXT::handle_request(%args);
 }
 
 1;
@@ -38,14 +40,15 @@ CatalystX::Plugin::Engine::FastCGI::Lighttpd - enable to dispatch to the Catalys
 
 =head1 VERSION
 
-This document describes CatalystX::Plugin::Engine::FastCGI::Lighttpd version 0.0.1
+This document describes CatalystX::Plugin::Engine::FastCGI::Lighttpd version 0.0.2
 
 =head1 SYNOPSIS
 
     # 1. in your MyApp.pm
     use Catalyst qw(+CatalystX::Engine::FastCGI::Lighttpd);
-    # or
-    # __PACKAGE__->setup(qw(+CatalystX::Engine::FastCGI::Lighttpd));
+    
+    #    when lighttpd is behind proxy
+    __PACKAGE__->config( using_frontend_proxy => 1 );
     
     # 2. in your lighttpd.conf
     server.error-handler-404 = "DISPATCH_TO_CATALYST"
@@ -62,7 +65,7 @@ This module enables it.
 
 =head1 SUBROUTINES/METHODS
 
-=head2 handle_request( $c, @args )
+=head2 handle_request( $c, %args )
 
 It rebuild PATH_INFO and QUERY_STRING from REQUEST_URI.
 
@@ -70,7 +73,7 @@ It rebuild PATH_INFO and QUERY_STRING from REQUEST_URI.
 
 =over
 
-=item C<<Do you want to apply this really?>>
+=item Do you want to apply this really?
 
 This module works only on fastcgi-lighttpd.
 

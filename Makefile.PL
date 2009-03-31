@@ -5,7 +5,7 @@ package main;
 use strict;
 use warnings;
 use utf8;
-our $VERSION = eval { require version; version::qv('0.0.1') };
+our $VERSION = eval { require version; version::qv('0.0.2') };
 
 use inc::Module::Install;
 
