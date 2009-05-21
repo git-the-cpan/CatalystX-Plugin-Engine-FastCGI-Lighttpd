@@ -5,7 +5,7 @@ package main;
 use strict;
 use warnings;
 use utf8;
-our $VERSION = eval { require version; version::qv('0.0.2') };
+our $VERSION = eval { require version; version::qv('0.1.0') };
 
 use inc::Module::Install;
 
@@ -15,10 +15,6 @@ perl_version '5.008';
 all_from 'lib/CatalystX/Plugin/Engine/FastCGI/Lighttpd.pm';
 
 requires 'version';
-
-build_requires 'Test::Base';
-
-use_test_base;
 
 auto_include;
 auto_install;

@@ -5,14 +5,14 @@
 use strict;
 use warnings;
 use utf8;
-use version; our $VERSION = qv('0.0.2');
+use version; our $VERSION = qv('0.1.0');
 
 BEGIN {
     use File::Spec;
     use FindBin qw($Bin);
     chdir File::Spec->catdir( $Bin, q{..} );
 }
-use Test::Base;
+use Test::More;
 
 if ( $ENV{TEST_CRITIC} || $ENV{TEST_ALL} || !$ENV{HARNESS_ACTIVE} ) {
     eval {

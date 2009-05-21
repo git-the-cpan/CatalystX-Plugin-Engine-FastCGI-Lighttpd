@@ -1,9 +1,7 @@
 ---
-abstract: 'enable to dispatch to the Catalyst via 404 handler.'
+abstract: 'Fix up for FastCGI on Lighttpd.'
 author:
   - 'Hironori Yoshida <yoshida@cpan.org>'
-build_requires:
-  Test::Base: 0
 distribution_type: module
 generated_by: 'Module::Install version 0.77'
 license: perl
@@ -16,9 +14,8 @@ no_index:
     - inc
     - t
 requires:
-  Filter::Util::Call: 0
   perl: 5.8.0
   version: 0
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.0.2
+version: 0.1.0

@@ -5,9 +5,7 @@ package CatalystX::Plugin::Engine::FastCGI::Lighttpd;
 use strict;
 use warnings;
 use utf8;
-use version; our $VERSION = qv('0.0.2');
-
-use NEXT;
+use version; our $VERSION = qv('0.1.0');
 
 sub handle_request {
     my ( $c, %args ) = @_;
@@ -15,11 +13,13 @@ sub handle_request {
     my $env_ref = $args{env};
 
     if ( ( $env_ref->{SERVER_SOFTWARE} || q{} ) !~ /lighttpd/msx ) {
-        $c->log->warn('Do you want to apply this really?');
+        $c->log->warn( $env_ref->{SERVER_SOFTWARE}
+              . ': This plugin should run on Lighttpd.' );
     }
 
-    if ( $c->engine ne 'Catalyst::Engine::FastCGI' ) {
-        $c->log->warn('Do you want to apply this really?');
+    if ( !$c->engine->isa('Catalyst::Engine::FastCGI') ) {
+        $c->log->warn(
+            ( ref $c->engine ) . ': This plugin should run on FastCGI.' );
     }
 
     ( $env_ref->{PATH_INFO}, $env_ref->{QUERY_STRING} ) =
@@ -27,7 +27,7 @@ sub handle_request {
 
     $env_ref->{HTTP_X_FORWARDED_HOST} ||= $env_ref->{HTTP_X_HOST};
 
-    return $c->NEXT::handle_request(%args);
+    return $c->next::method(%args);
 }
 
 1;
@@ -36,11 +36,11 @@ __END__
 
 =head1 NAME
 
-CatalystX::Plugin::Engine::FastCGI::Lighttpd - enable to dispatch to the Catalyst via 404 handler.
+CatalystX::Plugin::Engine::FastCGI::Lighttpd - Fix up for FastCGI on Lighttpd.
 
 =head1 VERSION
 
-This document describes CatalystX::Plugin::Engine::FastCGI::Lighttpd version 0.0.2
+This document describes CatalystX::Plugin::Engine::FastCGI::Lighttpd version 0.1.0
 
 =head1 SYNOPSIS
 
@@ -55,13 +55,14 @@ This document describes CatalystX::Plugin::Engine::FastCGI::Lighttpd version 0.0
     fastcgi.server = ( "DISPATCH_TO_CATALYST" =>
                        (( "socket" => "/path/to/myapp.socket",
                           "bin-path" => "/usr/bin/perl /path/to/myapp_fastcgi.pl",
-                          "max-procs" => 5,
                           "check-local" => "disable" )))
 
 =head1 DESCRIPTION
 
 C::E::FastCGI could not treat with PATH_INFO and QUERY_STRING correctly.
-This module enables it.
+This module fix up it.
+mod_proxy of Lighttpd does not set HTTP_X_FORWARDED_HOST.
+This module fix up it.
 
 =head1 SUBROUTINES/METHODS
 

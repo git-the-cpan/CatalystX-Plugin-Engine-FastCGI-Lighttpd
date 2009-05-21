@@ -5,7 +5,7 @@
 use strict;
 use warnings;
 use utf8;
-use version; our $VERSION = qv('0.0.2');
+use version; our $VERSION = qv('0.1.0');
 
 BEGIN {
     use File::Spec;
@@ -13,7 +13,7 @@ BEGIN {
     chdir File::Spec->catdir( $Bin, q{..} );
     use lib qw(lib);
 }
-use Test::Base tests => 2;
+use Test::More tests => 2;
 
 our $WHY_SKIP_SAWAMPERSAND;
 
